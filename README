@@ -1,0 +1,17 @@
+Description
+===========
+
+This is a script to upload nautilus files into Rackspace cloud files.
+
+Install
+======
+
+- Place the script somwhere like in your personal bin directory like
+  ${HOME}/bin or anywhere you feel.
+
+- Create a link to the nautilus scripts directory :
+
+  cd ${HOME}/bin #adjust the path if you have placed it somewhere else
+  ln -s $PWD/nautilus-rackspace-cloud-files.sh ~/.gnome2/nautilus-scripts/Upload\ to\ Rackspace\ Cloud
+
+Now you should have a menu scripts/Upload To Rackspace Cloud when you right click on a file in nautilus.
