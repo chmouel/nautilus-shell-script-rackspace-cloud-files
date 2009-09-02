@@ -61,7 +61,7 @@ function create_container {
       -H "X-Auth-Token: ${AuthToken}" \
       ${StorageUrl}/${container} && created=1
 
-    if [[ -z $container ]];then
+    if [[ -z $created ]];then
         zenity --title "Cannot create container" --error --text \
             "Cannot create container name ${container}" \
             --width 200 --height 25;
