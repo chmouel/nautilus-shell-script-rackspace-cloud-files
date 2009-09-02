@@ -15,3 +15,8 @@ Install
   ln -s $PWD/nautilus-rackspace-cloud-files.sh ~/.gnome2/nautilus-scripts/Upload\ to\ Rackspace\ Cloud
 
 Now you should have a menu scripts/Upload To Rackspace Cloud when you right click on a file in nautilus.
+
+Note
+====
+
+This has been developped on a fairly recent debian sid feel free to let me know if it does not work with your distro.
