@@ -3,6 +3,14 @@ Description
 
 This is a script to upload nautilus files into Rackspace cloud files.
 
+REQUIREMENT
+==========
+
+zenity
+GNU sed
+md5sum
+curl
+
 Install
 ======
 
