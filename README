@@ -10,6 +10,7 @@ zenity
 GNU sed
 md5sum
 curl
+file
 
 Install
 ======
@@ -22,7 +23,8 @@ Install
   cd ${HOME}/bin #adjust the path if you have placed it somewhere else
   ln -s $PWD/nautilus-rackspace-cloud-files.sh ~/.gnome2/nautilus-scripts/Upload\ to\ Rackspace\ Cloud
 
-Now you should have a menu scripts/Upload To Rackspace Cloud when you right click on a file in nautilus.
+Now you should have a menu scripts/Upload To Rackspace Cloud when you
+right click on a file (or select multiple files) in nautilus.
 
 Note
 ====
