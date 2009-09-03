@@ -1,4 +1,7 @@
 #!/bin/bash
+# Author: Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
+# Not officially supported by Rackspace only as a best effort basis :)
+
 ARGS=$@
 
 function get_api_key {
@@ -72,7 +75,13 @@ function create_container {
 function put_object {
     local container=$1
     local file=$(readlink -f $2)
-    local object=$(basename ${file})
+    local dest_name=$3
+    if [[ -n $3 ]];then
+        object=$3
+    else
+        object=${file}
+    fi
+    object=$(basename ${object})
     #url encode in sed yeah i am not insane i have googled that
     object=$(echo $object|sed -e 's/%/%25/g;s/ /%20/g;s/ /%09/g;s/!/%21/g;s/"/%22/g;s/#/%23/g;s/\$/%24/g;s/\&/%26/g;s/'\''/%27/g;s/(/%28/g;s/)/%29/g;s/\*/%2a/g;s/+/%2b/g; s/,/%2c/g; s/-/%2d/g; s/\./%2e/g; s/:/%3a/g; s/;/%3b/g; s//%3e/g; s/?/%3f/g; s/@/%40/g; s/\[/%5b/g; s/\\/%5c/g; s/\]/%5d/g; s/\^/%5e/g; s/_/%5f/g; s/`/%60/g; s/{/%7b/g; s/|/%7c/g; s/}/%7d/g; s/~/%7e/g; s/      /%09/g;')
     
@@ -126,18 +135,36 @@ function choose_container {
     echo $container
 }
 
+set -e
 [[  -e ${HOME}/.config/rackspace-cloud/config ]] && \
     source ${HOME}/.config/rackspace-cloud/config
 [[ -n ${RCLOUD_API_KEY} && -n ${RCLOUD_API_USER} ]] && check_api_key || get_api_key
 
 container=$(choose_container)
 
-set -u
-set -e
-
 IFS=""
-for file in $@;do
-    file=$(readlink -f ${file})
+for arg in $@;do
+    tarname=
+    file=$(readlink -f ${arg})
+    dest_name=
+    
     [[ -e ${file} ]] || continue
-    put_object ${container} ${file}
+    [[ -f ${file} || -d ${file} ]] || continue
+    
+    if [[ -d ${file} ]];then
+        if [[ -w ./ ]];then
+            tardir="."
+        else
+            tardir=/tmp
+        fi
+        tarname=${tardir}/${arg}-cf-tarball.tar.gz #in case if already exist we don't destruct it
+        dest_name=${arg}.tar.gz
+        tar cvzf $tarname ${arg}|zenity --text "Making tarball of ${file}"  --title "Compressing" \
+        --width 500 --height 50 \
+        --progress --pulsate --auto-kill --auto-close
+        file=${tarname}
+    fi
+
+    put_object ${container} ${file} ${dest_name}
+    [[ -n ${tarname} ]] && rm -f ${tarname}
 done

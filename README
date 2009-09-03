@@ -1,3 +1,7 @@
+Author
+==========
+
+
 Description
 ===========
 
@@ -8,6 +12,7 @@ REQUIREMENT
 
 zenity
 GNU sed
+GNU tar
 md5sum
 curl
 file
@@ -25,6 +30,8 @@ Install
 
 Now you should have a menu scripts/Upload To Rackspace Cloud when you
 right click on a file (or select multiple files) in nautilus.
+
+if one of the file is a directory it will make tar gzip tarball and upload it.
 
 Note
 ====
