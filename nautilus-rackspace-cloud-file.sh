@@ -1,8 +1,11 @@
 #!/bin/bash
 # Author: Chmouel Boudjnah <chmouel.boudjnah@rackspace.co.uk>
 # Not officially supported by Rackspace only as a best effort basis :)
-
 ARGS=$@
+
+# Define yes to make it to copy to url to clipboard (via a shortened url
+# service) You need to have the software xclip installed in your system.
+COPY_URL_TO_CLIPBOARD=yes
 
 function get_api_key {
     RCLOUD_API_USER=$(zenity --title "Enter Username" --entry \
@@ -99,6 +102,7 @@ function put_object {
     fi
     
     uploaded=
+
     curl -o/dev/null -f -X PUT -T ${file} \
         -H "ETag: ${etag}" \
         -H "Content-type: ${ctype}" \
@@ -106,10 +110,26 @@ function put_object {
         ${StorageUrl}/${container}/${object} 2>&1|zenity --text "Uploading ${object}"  --title "Uploading" \
         --width 500 --height 50 \
         --progress --pulsate --auto-kill --auto-close
+
+    if [[ $COPY_URL_TO_CLIPBOARD == "yes" || $COPY_URL_TO_CLIPBOARD == "YES" || $COPY_URL_TO_CLIPBOARD == "Yes" ]];then
+        if [[ -x /usr/bin/xclip ]];then
+            PUBLIC_URL=$(container_public ${container})
+            if [[ -n $PUBLIC_URL ]];then
+                short_url=$(curl -s "http://is.gd/api.php?longurl=${PUBLIC_URL}/$object")
+                echo $short_url|xclip -selection clipboard
+            fi
+        fi
+    fi
+}
+
+function container_public {
+    local cont=$@
+    curl -s -f -k -I -H "X-Auth-Token: ${AuthToken}" $CDNManagementUrl/$cont|grep "X-CDN-URI"|sed -e 's/\r$//;s/X-CDN-URI: //'
 }
 
 function choose_container {
-    lastcontainer=
+    local lastcontainer args 
+
     if [[ -e ${HOME}/.config/rackspace-cloud/last-container ]];then
         lastcontainer=$(cat ${HOME}/.config/rackspace-cloud/last-container)
     fi
@@ -118,7 +138,7 @@ function choose_container {
       -H "X-Auth-Token: ${AuthToken}" \
       ${StorageUrl}|sort -n
     )
-    args=
+    
     for cont in ${CONTAINERS_LIST};do
         v=FALSE
         if [[ $cont == ${lastcontainer} ]];then

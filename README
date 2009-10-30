@@ -7,8 +7,8 @@ Description
 
 This is a script to upload nautilus files into Rackspace cloud files.
 
-REQUIREMENT
-==========
+DEPENDENCIES
+============
 
 zenity
 GNU sed
@@ -16,6 +16,7 @@ GNU tar
 md5sum
 curl
 file
+xclip (optional)
 
 Install
 ======
@@ -31,9 +32,11 @@ Install
 Now you should have a menu scripts/Upload To Rackspace Cloud when you
 right click on a file (or select multiple files) in nautilus.
 
-if one of the file is a directory it will make tar gzip tarball and upload it.
+If one of the file is a directory it will make tar gzip tarball and upload it.
+
+If you have the package xclip installed available in Debians or from http://sourceforge.net/projects/xclip/ and your container is public it will automatically shorten the full public URL and copy to your clipboard.
 
 Note
 ====
 
-This has been developped on a fairly recent debian sid feel free to let me know if it does not work with your distro.
+This has been developed on a fairly recent debian sid feel free to let me know if it does not work with your distro.
