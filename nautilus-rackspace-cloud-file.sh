@@ -7,6 +7,9 @@ ARGS=$@
 # service) You need to have the software xclip installed in your system.
 COPY_URL_TO_CLIPBOARD=yes
 
+# Containers to ignore in the list
+CONTAINERS_TO_IGNORE=".CDN_ACCESS_LOGS"
+
 function get_api_key {
     RCLOUD_API_USER=$(zenity --title "Enter Username" --entry \
         --text "Rackspace Cloud Username:" --width 200 --height 50)
@@ -141,6 +144,14 @@ function choose_container {
     
     for cont in ${CONTAINERS_LIST};do
         v=FALSE
+        skip=
+        for ignore_cont in $CONTAINERS_TO_IGNORE;do
+            if [[ $ignore_cont == $cont ]];then
+                skip="1"
+            fi
+        done
+        [[ -n ${skip} ]] && continue
+
         if [[ $cont == ${lastcontainer} ]];then
             v=TRUE
         fi
